@@ -162,9 +162,31 @@
     const referenceImages = document.getElementById('referenceImages');
     const uploadPreview = document.getElementById('uploadPreview');
 
-    const MAX_UPLOAD_COUNT = 3;
+    const MAX_UPLOAD_COUNT = 5;
     const MAX_FILE_SIZE_MB = 5;
     const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+    const ALLOWED_MIME_TYPES = new Set([
+        'image/jpeg',
+        'image/png',
+        'image/webp',
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'text/plain'
+    ]);
+    const ALLOWED_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt']);
+
+    function getFileExtension(fileName) {
+        const parts = fileName.toLowerCase().split('.');
+        return parts.length > 1 ? parts.pop() : '';
+    }
+
+    function isAllowedFile(file) {
+        const extension = getFileExtension(file.name);
+        return ALLOWED_MIME_TYPES.has(file.type) || ALLOWED_EXTENSIONS.has(extension);
+    }
 
     function renderUploadPreview(files) {
         if (!uploadPreview) return;
@@ -177,20 +199,28 @@
         }
 
         files.forEach((file) => {
-            const objectUrl = URL.createObjectURL(file);
-
             const item = document.createElement('div');
             item.className = 'upload-item';
-
-            const img = document.createElement('img');
-            img.src = objectUrl;
-            img.alt = file.name;
-            img.addEventListener('load', () => URL.revokeObjectURL(objectUrl), { once: true });
 
             const name = document.createElement('span');
             name.textContent = file.name;
 
-            item.appendChild(img);
+            if (file.type.startsWith('image/')) {
+                const objectUrl = URL.createObjectURL(file);
+                const img = document.createElement('img');
+                img.src = objectUrl;
+                img.alt = file.name;
+                img.addEventListener('load', () => URL.revokeObjectURL(objectUrl), { once: true });
+                item.appendChild(img);
+            } else {
+                item.classList.add('file');
+                const fileThumb = document.createElement('div');
+                const extension = getFileExtension(file.name) || 'file';
+                fileThumb.className = 'file-thumb';
+                fileThumb.textContent = extension;
+                item.appendChild(fileThumb);
+            }
+
             item.appendChild(name);
             uploadPreview.appendChild(item);
         });
@@ -225,21 +255,21 @@
 
             if (selectedFiles.length > MAX_UPLOAD_COUNT) {
                 referenceImages.classList.add('error');
-                referenceImages.setCustomValidity(`Vui lòng chọn tối đa ${MAX_UPLOAD_COUNT} ảnh.`);
+                referenceImages.setCustomValidity(`Vui lòng chọn tối đa ${MAX_UPLOAD_COUNT} tệp.`);
                 referenceImages.reportValidity();
                 if (valid) referenceImages.focus();
                 valid = false;
             } else {
                 const invalidFile = selectedFiles.find((file) => {
-                    return !file.type.startsWith('image/') || file.size > MAX_FILE_SIZE_BYTES;
+                    return !isAllowedFile(file) || file.size > MAX_FILE_SIZE_BYTES;
                 });
 
                 if (invalidFile) {
                     referenceImages.classList.add('error');
-                    if (!invalidFile.type.startsWith('image/')) {
-                        referenceImages.setCustomValidity('Chỉ chấp nhận tệp ảnh (JPG, PNG, WEBP...).');
+                    if (!isAllowedFile(invalidFile)) {
+                        referenceImages.setCustomValidity('Chỉ chấp nhận ảnh hoặc tài liệu: PDF, DOC/DOCX, XLS/XLSX, TXT.');
                     } else {
-                        referenceImages.setCustomValidity(`Mỗi ảnh tối đa ${MAX_FILE_SIZE_MB}MB.`);
+                        referenceImages.setCustomValidity(`Mỗi tệp tối đa ${MAX_FILE_SIZE_MB}MB.`);
                     }
                     referenceImages.reportValidity();
                     if (valid) referenceImages.focus();

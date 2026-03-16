@@ -966,6 +966,26 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   height: 88px;
   object-fit: cover;
 }
+.upload-item.file {
+  display: flex;
+  align-items: center;
+  min-height: 88px;
+}
+.file-thumb {
+  width: 48px;
+  height: 48px;
+  margin: 10px 10px 10px 12px;
+  border-radius: 10px;
+  background: rgba(26,92,66,.12);
+  color: var(--green-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: .66rem;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
 .upload-item span {
   display: block;
   padding: 6px 8px;
@@ -974,6 +994,9 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.upload-item.file span {
+  padding: 0 10px 0 0;
 }
 .form-note {
   text-align: center;

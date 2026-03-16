@@ -603,6 +603,25 @@
                   placeholder="Bạn muốn khắc hoa văn gì? Cần bao nhiêu chiếc? Địa chỉ giao hàng..."
                 ></textarea>
               </div>
+              <div class="form-group">
+                <label for="referenceImages">Ảnh</label>
+                <input
+                  type="file"
+                  id="referenceImages"
+                  name="referenceImages"
+                  accept="image/*"
+                  multiple
+                />
+                <small class="form-hint"
+                  >Bạn có thể tải lên tối đa 3 ảnh (JPG, PNG, WEBP), mỗi ảnh tối
+                  đa 5MB.</small
+                >
+                <div
+                  class="upload-preview"
+                  id="uploadPreview"
+                  style="display: none"
+                ></div>
+              </div>
               <button type="submit" class="btn btn-primary btn-full">
                 Gửi Yêu Cầu 🌿
               </button>

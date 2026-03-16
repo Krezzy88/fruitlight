@@ -159,6 +159,44 @@
     // ---- Contact form ----
     const form = document.getElementById('contactForm');
     const formSuccess = document.getElementById('formSuccess');
+    const referenceImages = document.getElementById('referenceImages');
+    const uploadPreview = document.getElementById('uploadPreview');
+
+    const MAX_UPLOAD_COUNT = 3;
+    const MAX_FILE_SIZE_MB = 5;
+    const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+
+    function renderUploadPreview(files) {
+        if (!uploadPreview) return;
+
+        uploadPreview.innerHTML = '';
+
+        if (!files.length) {
+            uploadPreview.style.display = 'none';
+            return;
+        }
+
+        files.forEach((file) => {
+            const objectUrl = URL.createObjectURL(file);
+
+            const item = document.createElement('div');
+            item.className = 'upload-item';
+
+            const img = document.createElement('img');
+            img.src = objectUrl;
+            img.alt = file.name;
+            img.addEventListener('load', () => URL.revokeObjectURL(objectUrl), { once: true });
+
+            const name = document.createElement('span');
+            name.textContent = file.name;
+
+            item.appendChild(img);
+            item.appendChild(name);
+            uploadPreview.appendChild(item);
+        });
+
+        uploadPreview.style.display = 'grid';
+    }
 
     if (form) {
         form.addEventListener('submit', function (e) {
@@ -172,6 +210,7 @@
             // Validate required fields
             const name = form.querySelector('#name');
             const phone = form.querySelector('#phone');
+            const selectedFiles = referenceImages ? Array.from(referenceImages.files || []) : [];
 
             if (!name.value.trim()) {
                 name.classList.add('error');
@@ -184,6 +223,30 @@
                 valid = false;
             }
 
+            if (selectedFiles.length > MAX_UPLOAD_COUNT) {
+                referenceImages.classList.add('error');
+                referenceImages.setCustomValidity(`Vui lòng chọn tối đa ${MAX_UPLOAD_COUNT} ảnh.`);
+                referenceImages.reportValidity();
+                if (valid) referenceImages.focus();
+                valid = false;
+            } else {
+                const invalidFile = selectedFiles.find((file) => {
+                    return !file.type.startsWith('image/') || file.size > MAX_FILE_SIZE_BYTES;
+                });
+
+                if (invalidFile) {
+                    referenceImages.classList.add('error');
+                    if (!invalidFile.type.startsWith('image/')) {
+                        referenceImages.setCustomValidity('Chỉ chấp nhận tệp ảnh (JPG, PNG, WEBP...).');
+                    } else {
+                        referenceImages.setCustomValidity(`Mỗi ảnh tối đa ${MAX_FILE_SIZE_MB}MB.`);
+                    }
+                    referenceImages.reportValidity();
+                    if (valid) referenceImages.focus();
+                    valid = false;
+                }
+            }
+
             if (!valid) return;
 
             // Simulate form submission (replace with actual API call)
@@ -193,12 +256,23 @@
 
             setTimeout(() => {
                 form.reset();
+                renderUploadPreview([]);
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Gửi Yêu Cầu 🌿';
                 formSuccess.style.display = 'block';
                 setTimeout(() => { formSuccess.style.display = 'none'; }, 6000);
             }, 1200);
         });
+
+        if (referenceImages) {
+            referenceImages.addEventListener('change', () => {
+                referenceImages.classList.remove('error');
+                referenceImages.setCustomValidity('');
+
+                const files = Array.from(referenceImages.files || []);
+                renderUploadPreview(files.slice(0, MAX_UPLOAD_COUNT));
+            });
+        }
 
         // Real-time clear error on input
         form.querySelectorAll('input, select, textarea').forEach(field => {

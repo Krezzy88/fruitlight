@@ -1222,6 +1222,138 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 /* =============================================
+   LIFESTYLE
+   ============================================= */
+.lifestyle {
+  padding: 120px 0;
+  background: var(--off-white);
+}
+.lifestyle-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+}
+.lifestyle-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+.lifestyle-item.reverse {
+  grid-template-columns: 1fr 1fr;
+  direction: rtl;
+}
+.lifestyle-item.reverse > * {
+  direction: ltr;
+}
+.lifestyle-img {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  min-height: 400px;
+  box-shadow: var(--shadow-lg);
+}
+.lifestyle-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .6s;
+}
+.lifestyle-item:hover .lifestyle-img img {
+  transform: scale(1.05);
+}
+.lifestyle-text h3 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  color: var(--green-dark);
+  margin-bottom: 16px;
+}
+.lifestyle-text p {
+  font-size: 1.02rem;
+  color: var(--text-mid);
+  line-height: 1.8;
+  margin-bottom: 24px;
+}
+.lifestyle-features {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.lifestyle-features li {
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.lifestyle-features li::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* =============================================
+   PACKAGING & GIFT
+   ============================================= */
+.packaging {
+  padding: 120px 0;
+  background: linear-gradient(180deg, #fff9f0 0%, var(--off-white) 100%);
+}
+.packaging-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 32px;
+}
+.packaging-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+}
+.packaging-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
+}
+.packaging-img {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, rgba(201,168,76,.05), rgba(26,92,66,.05));
+}
+.packaging-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .5s;
+}
+.packaging-card:hover .packaging-img img {
+  transform: scale(1.08);
+}
+.packaging-card h3 {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--green-dark);
+  padding: 20px 20px 8px;
+}
+.packaging-card p {
+  font-size: 0.9rem;
+  color: var(--text-mid);
+  line-height: 1.6;
+  padding: 0 20px 20px;
+  flex: 1;
+}
+
+/* =============================================
    RESPONSIVE
    ============================================= */
 @media (max-width: 1024px) {
@@ -1240,6 +1372,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .gallery-grid { grid-template-columns: repeat(2, 1fr); }
   .gallery-item.wide { grid-column: span 2; }
   .gallery-item.tall { grid-row: span 1; }
+  .packaging-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 768px) {
@@ -1274,6 +1407,10 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .why-image { max-height: 400px; }
   .why-image img { height: 400px; }
 
+  .lifestyle-item { grid-template-columns: 1fr; }
+  .lifestyle-item.reverse { grid-template-columns: 1fr; direction: ltr; }
+  .lifestyle-img { min-height: 300px; }
+
   .contact-grid { grid-template-columns: 1fr; }
   .contact-form-wrap { padding: 32px 24px; }
   .upload-preview { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1304,4 +1441,5 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .product-card.featured { grid-column: span 1; }
   .step { min-width: 240px; max-width: 300px; }
   .upload-preview { grid-template-columns: 1fr; }
+  .packaging-grid { grid-template-columns: 1fr; }
 }
